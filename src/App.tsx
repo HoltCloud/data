@@ -720,16 +720,23 @@ function App() {
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "铂")
       },
-      {
-        name: "饰品类型筛选",
-        filter: (row: CsvData) =>
-          // “贵金属结论”不为空
-          //(row["贵金属结论"] != null && row["贵金属结论"].trim().length > 0) &&
-          //质检价格不为0
-          parseFloat(row["质检价格"]) !== 0 &&
-          // “饰品类型”为空
-          !(row["饰品类型"] != null && row["饰品类型"].trim().length > 0)
-      },
+  {
+  name: "饰品类型筛选",
+  filter: (row: CsvData) => {
+    const price = parseFloat(row["质检价格"]);
+    const type = row["饰品类型"];
+    const name = row["商品名称"] || ""; // 确保名称不为 null
+
+    return (
+      price !== 0 &&
+      !(type != null && type.trim().length > 0) &&
+      // 新增条件：商品名称不包含以下关键词
+      !name.includes("金条") &&
+      !name.includes("金豆") &&
+      !name.includes("投资金")
+    );
+  }
+},
       {
         name: "检测备注漏含覆层筛选",
         filter: (row: CsvData) =>
