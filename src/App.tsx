@@ -706,6 +706,24 @@ function App() {
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "足银")
       },
+     {
+  name: "南红筛选",
+  filter: (row: CsvData) => {
+    // 定义所有需要包含的关键词
+    const targetKeywords = ["保山红", "凉山红", "川料红", "瓦西", "九口红", "锦红", "南红"];
+    
+    // 检查 商品名称 或 商品材质 是否包含上述任一关键词
+    const matchesNameOrMaterial = targetKeywords.some(key => 
+      containsText(row["商品名称"], key) || containsText(row["商品材质"], key)
+    );
+
+    return (
+      matchesNameOrMaterial &&
+      parseFloat(row["质检价格"]) !== 0 &&
+      !containsText(row["备注"], "南红")
+    );
+  }
+},
       {
         name: "足铂筛选",
         filter: (row: CsvData) =>
