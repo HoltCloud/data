@@ -228,7 +228,7 @@ function FulfillmentStatusPage({
         setPieData([
           { label: '待商家绑码', value: waitBind, color: '#3B82F6' },
           { label: '待质检入库', value: waitIn, color: '#10B981' },
-          { label: '其他', value: Math.max(0, total - waitBind - waitIn), color: '#E5E7EB' }
+          //{ label: '其他', value: Math.max(0, total - waitBind - waitIn), color: '#E5E7EB' }
         ]);
       } catch (err) {
         setError('Excel解析失败，请检查文件格式');
@@ -794,6 +794,25 @@ function App() {
           !containsText(row["重量"], "200.00")
 
       }
+      //{
+      //name: "D字段内容遗漏筛选",
+      //filter: (row: CsvData) => {
+      //const dText = row["宝玉石结论"]; // 获取字段 D 的内容
+
+      // 1. 若 D 无文字词组（为空），则不筛选（直接返回 false）
+      //if (dText == null || dText.trim() === "") {
+      //return false;
+      //}
+
+      // 2. 核心逻辑：
+      // 只有当 A 不包含 D，且 B 不包含 D，且 C 也不包含 D 时，返回 true（筛选出来）
+      //return (
+      //!containsText(row["商品材质"], dText) &&
+      //!containsText(row["镶嵌材质"], dText) &&
+      //!containsText(row["配件材质"], dText)
+      //);
+      //}
+      // }
     ];
 
     return filters.map(filter => ({

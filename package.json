@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && npx wrangler deploy",
+    "deploy:prod": "npm run build && npx wrangler deploy --env production"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",
