@@ -751,7 +751,9 @@ function App() {
       // 新增条件：商品名称不包含以下关键词
       !name.includes("金条") &&
       !name.includes("金豆") &&
-      !name.includes("投资金")
+      !name.includes("投资") &&
+      !name.includes("金钞") &&
+      !name.includes("金饼")
     );
   }
 },
@@ -759,25 +761,29 @@ function App() {
         name: "检测备注漏含覆层筛选",
         filter: (row: CsvData) =>
           containsText(row["重量"], "覆层") &&
-          !containsText(row["备注"], "贵金属纯度不包括表层")
+          !containsText(row["备注"], "贵金属纯度不包括表层") &&
+          parseFloat(row["质检价格"]) !== 0
       },
       {
         name: "翡翠备注筛选",
         filter: (row: CsvData) =>
           containsText(row["宝玉石结论"], "翡翠") &&
-          !(containsText(row["备注"], "A货翡翠") || containsText(row["备注"], "翡翠A货"))
+          !(containsText(row["备注"], "A货翡翠") || containsText(row["备注"], "翡翠A货")) &&
+          parseFloat(row["质检价格"]) !== 0
       },
       {
         name: "重量单位筛选",
         filter: (row: CsvData) =>
-          !containsText(row["重量"], "g")
+          !containsText(row["重量"], "g") &&
+          parseFloat(row["质检价格"]) !== 0
       },
       {
         name: "覆层称重备注筛选",
         filter: (row: CsvData) =>
           !containsText(row["重量"], "含覆层") &&
           !containsText(row["重量"], "总重") &&
-          containsText(row["备注"], "贵金属纯度不包括表层")
+          containsText(row["备注"], "贵金属纯度不包括表层") &&
+          parseFloat(row["质检价格"]) !== 0
       },
       {
         name: "赠链检测备注筛选",
@@ -785,13 +791,15 @@ function App() {
           containsText(row["重量"], "不含链") &&
           !containsText(row["备注"], "配链") &&
           !containsText(row["备注"], "银925链") &&
-          !containsText(row["备注"], "配18K金链")
+          !containsText(row["备注"], "配18K金链") &&
+          parseFloat(row["质检价格"]) !== 0
       },
       {
         name: "称重备注不含链筛选",
         filter: (row: CsvData) =>
           !(containsText(row["重量"], "不含链") || containsText(row["重量"], "总重")) &&
-          (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链"))
+          (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链")) &&
+          parseFloat(row["质检价格"]) !== 0
       },
       // {
       // name: "驳回筛选",
@@ -816,7 +824,8 @@ function App() {
           !containsText(row["重量"], "50.00") &&
           !containsText(row["重量"], "100.00") &&
           !containsText(row["重量"], "150.00") &&
-          !containsText(row["重量"], "200.00")
+          !containsText(row["重量"], "200.00") &&
+          parseFloat(row["质检价格"]) !== 0
 
       }
       //{
