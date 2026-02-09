@@ -688,7 +688,7 @@ function App() {
       {
         name: "K金筛选",
         filter: (row: CsvData) =>
-          (containsText(row["商品名称"], "K金") || containsText(row["商品材质"], "K金")) &&
+          (containsText(row["商品名称"], "K金") || containsText(row["商品材质"], "K金") || containsText(row["镶嵌材质"], "K金")) &&
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "K金")
       },
