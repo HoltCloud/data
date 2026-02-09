@@ -724,6 +724,24 @@ function App() {
     );
   }
 },
+    {
+  name: "海水珍珠筛选",
+  filter: (row: CsvData) => {
+    // 定义所有需要包含的关键词
+    const targetKeywords = ["海水珍珠", "海水珠"];
+    
+    // 检查 商品名称 或 商品材质 是否包含上述任一关键词
+    const matchesNameOrMaterial = targetKeywords.some(key => 
+      containsText(row["商品名称"], key) || containsText(row["商品材质"], key)
+    );
+
+    return (
+      matchesNameOrMaterial &&
+      parseFloat(row["质检价格"]) !== 0 &&
+      !containsText(row["宝玉石结论"], "海水珍珠")
+    );
+  }
+},
       {
         name: "足铂筛选",
         filter: (row: CsvData) =>
