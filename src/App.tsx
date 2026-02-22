@@ -670,11 +670,13 @@ function App() {
           const notInName = !containsText(row["商品名称"], "足金");
           const notInMaterial = !containsText(row["商品材质"], "足金");
           const notInInlay = !containsText(row["镶嵌材质"], "足金");
+          const notInInlay1 = !containsText(row["配件材质"], "足金");
 
           return (
             notInName && 
             notInMaterial && 
             notInInlay &&
+            notInInlay1 &&
             parseFloat(row["质检价格"]) !== 0 &&
             containsText(row["贵金属结论"], "足金")
           );
