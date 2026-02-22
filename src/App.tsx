@@ -825,7 +825,7 @@ function App() {
           !(containsText(row["重量"], "不含链") || containsText(row["重量"], "总重")) &&
           (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链")) &&
           parseFloat(row["质检价格"]) !== 0
-      }
+      },
       // {
       // name: "驳回筛选",
       // filter: (row: CsvData) =>
