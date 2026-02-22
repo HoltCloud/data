@@ -665,17 +665,26 @@ function App() {
       },
       {
         name: "上错足金筛选",
-        filter: (row: CsvData) =>
-          (!containsText(row["商品名称"], "足金") || !containsText(row["商品材质"], "足金") || !containsText(row["镶嵌材质"], "足金")) &&
-          parseFloat(row["质检价格"]) !== 0 &&
-          containsText(row["贵金属结论"], "足金")
+        filter: (row: CsvData) => {
+          // 检查三个字段是否都不包含“足金”
+          const notInName = !containsText(row["商品名称"], "足金");
+          const notInMaterial = !containsText(row["商品材质"], "足金");
+          const notInInlay = !containsText(row["镶嵌材质"], "足金");
+
+          return (
+            notInName && 
+            notInMaterial && 
+            notInInlay &&
+            parseFloat(row["质检价格"]) !== 0 &&
+            containsText(row["贵金属结论"], "足金")
+          );
+        }
       },
       {
         name: "错误备注999",
         filter: (row: CsvData) =>
           !containsText(row["贵金属结论"], "足金") &&
           parseFloat(row["质检价格"]) !== 0 &&
-          !containsText(row["贵金属结论"], "足金") &&
           containsText(row["备注"], "999")
       },
       {
@@ -684,13 +693,6 @@ function App() {
           (containsText(row["商品名称"], "足金") || containsText(row["商品材质"], "足金")) &&
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "足金")
-      },
-      {
-        name: "上错足金筛选",
-        filter: (row: CsvData) =>
-          (!containsText(row["商品名称"], "足金") || !containsText(row["商品材质"], "足金") || !containsText(row["镶嵌材质"], "足金")) &&
-          parseFloat(row["质检价格"]) !== 0 &&
-          containsText(row["贵金属结论"], "足金")
       },
       {
         name: "K金筛选",
@@ -713,42 +715,42 @@ function App() {
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "足银")
       },
-     {
-  name: "南红筛选",
-  filter: (row: CsvData) => {
-    // 定义所有需要包含的关键词
-    const targetKeywords = ["保山红", "凉山红", "川料红", "瓦西", "九口红", "锦红", "南红"];
-    
-    // 检查 商品名称 或 商品材质 是否包含上述任一关键词
-    const matchesNameOrMaterial = targetKeywords.some(key => 
-      containsText(row["商品名称"], key) || containsText(row["商品材质"], key)
-    );
+      {
+        name: "南红筛选",
+        filter: (row: CsvData) => {
+          // 定义所有需要包含的关键词
+          const targetKeywords = ["保山红", "凉山红", "川料红", "瓦西", "九口红", "锦红", "南红"];
+          
+          // 检查 商品名称 或 商品材质 是否包含上述任一关键词
+          const matchesNameOrMaterial = targetKeywords.some(key => 
+            containsText(row["商品名称"], key) || containsText(row["商品材质"], key)
+          );
 
-    return (
-      matchesNameOrMaterial &&
-      parseFloat(row["质检价格"]) !== 0 &&
-      !containsText(row["备注"], "南红")
-    );
-  }
-},
-    {
-  name: "海水珍珠筛选",
-  filter: (row: CsvData) => {
-    // 定义所有需要包含的关键词
-    const targetKeywords = ["海水珍珠", "海水珠"];
-    
-    // 检查 商品名称 或 商品材质 是否包含上述任一关键词
-    const matchesNameOrMaterial = targetKeywords.some(key => 
-      containsText(row["商品名称"], key) || containsText(row["商品材质"], key)
-    );
+          return (
+            matchesNameOrMaterial &&
+            parseFloat(row["质检价格"]) !== 0 &&
+            !containsText(row["备注"], "南红")
+          );
+        }
+      },
+      {
+        name: "海水珍珠筛选",
+        filter: (row: CsvData) => {
+          // 定义所有需要包含的关键词
+          const targetKeywords = ["海水珍珠", "海水珠"];
+          
+          // 检查 商品名称 或 商品材质 是否包含上述任一关键词
+          const matchesNameOrMaterial = targetKeywords.some(key => 
+            containsText(row["商品名称"], key) || containsText(row["商品材质"], key)
+          );
 
-    return (
-      matchesNameOrMaterial &&
-      parseFloat(row["质检价格"]) !== 0 &&
-      !containsText(row["宝玉石结论"], "海水珍珠")
-    );
-  }
-},
+          return (
+            matchesNameOrMaterial &&
+            parseFloat(row["质检价格"]) !== 0 &&
+            !containsText(row["宝玉石结论"], "海水珍珠")
+          );
+        }
+      },
       {
         name: "足铂筛选",
         filter: (row: CsvData) =>
@@ -763,25 +765,23 @@ function App() {
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "铂")
       },
-  {
-  name: "饰品类型筛选",
-  filter: (row: CsvData) => {
-    const price = parseFloat(row["质检价格"]);
-    const type = row["饰品类型"];
-    const name = row["商品名称"] || ""; // 确保名称不为 null
+      {
+        name: "饰品类型筛选",
+        filter: (row: CsvData) => {
+          const price = parseFloat(row["质检价格"]);
+          const type = row["饰品类型"];
 
-    return (
-      price !== 0 &&
-      !(type != null && type.trim().length > 0) &&
-      // 新增条件：商品名称不包含以下关键词
-      !name.includes("金条") &&
-      !name.includes("金豆") &&
-      !name.includes("投资") &&
-      !name.includes("金钞") &&
-      !name.includes("金饼")
-    );
-  }
-},
+          return (
+            price !== 0 &&
+            !(type != null && type.trim().length > 0) &&
+            !containsText(row["商品名称"], "金条") &&
+            !containsText(row["商品名称"], "金豆") &&
+            !containsText(row["商品名称"], "投资") &&
+            !containsText(row["商品名称"], "金钞") &&
+            !containsText(row["商品名称"], "金饼")
+          );
+        }
+      },
       {
         name: "检测备注漏含覆层筛选",
         filter: (row: CsvData) =>
@@ -825,7 +825,7 @@ function App() {
           !(containsText(row["重量"], "不含链") || containsText(row["重量"], "总重")) &&
           (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链")) &&
           parseFloat(row["质检价格"]) !== 0
-      },
+      }
       // {
       // name: "驳回筛选",
       // filter: (row: CsvData) =>
