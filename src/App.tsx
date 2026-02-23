@@ -660,11 +660,12 @@ function App() {
           (containsText(row["商品名称"], "999") || containsText(row["商品材质"], "999")) &&
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["商品名称"], "铂") &&
+          !containsText(row["商品名称"], "翡翠") &&
           !containsText(row["商品材质"], "铂") &&
           !containsText(row["备注"], "999")
       },
       {
-        name: "上错足金筛选",
+        name: "上错足金材质",
         filter: (row: CsvData) => {
           // 检查三个字段是否都不包含“足金”
           const notInName = !containsText(row["商品名称"], "足金");
@@ -828,52 +829,33 @@ function App() {
           (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链")) &&
           parseFloat(row["质检价格"]) !== 0
       },
-      // {
-      // name: "驳回筛选",
-      // filter: (row: CsvData) =>
-      //  containsText(row["质检结果"], "不通过")
-      // },
+
       //{
-      //  name: "严格零价格筛选",
-      //   filter: (row: CsvData) => parseFloat(row["质检价格"]) === 0
-      //  },
-      // {
-      // name: "非零质检价格筛选",
-      //filter: (row: CsvData) => parseFloat(row["质检价格"]) !== 0
-      //},
+       // name: "零重量筛选",
+        //filter: (row: CsvData) =>
+          //containsText(row["重量"], "0.00") &&
+         // !containsText(row["重量"], "10.00") &&
+         // !containsText(row["重量"], "20.00") &&
+         // !containsText(row["重量"], "30.00") &&
+        //  !containsText(row["重量"], "50.00") &&
+       //   !containsText(row["重量"], "150.00") &&
+       //   !containsText(row["重量"], "200.00") &&
+       //   parseFloat(row["质检价格"]) !== 0
+
+    //  }
       {
         name: "零重量筛选",
-        filter: (row: CsvData) =>
-          containsText(row["重量"], "0.00") &&
-          !containsText(row["重量"], "10.00") &&
-          !containsText(row["重量"], "20.00") &&
-          !containsText(row["重量"], "30.00") &&
-          !containsText(row["重量"], "50.00") &&
-          !containsText(row["重量"], "100.00") &&
-          !containsText(row["重量"], "150.00") &&
-          !containsText(row["重量"], "200.00") &&
-          parseFloat(row["质检价格"]) !== 0
-
-      }
-      //{
-      //name: "D字段内容遗漏筛选",
-      //filter: (row: CsvData) => {
-      //const dText = row["宝玉石结论"]; // 获取字段 D 的内容
-
-      // 1. 若 D 无文字词组（为空），则不筛选（直接返回 false）
-      //if (dText == null || dText.trim() === "") {
-      //return false;
-      //}
-
-      // 2. 核心逻辑：
-      // 只有当 A 不包含 D，且 B 不包含 D，且 C 也不包含 D 时，返回 true（筛选出来）
-      //return (
-      //!containsText(row["商品材质"], dText) &&
-      //!containsText(row["镶嵌材质"], dText) &&
-      //!containsText(row["配件材质"], dText)
-      //);
-      //}
-      // }
+        filter: (row: CsvData) => {
+          // 使用 parseFloat 将文本提取为纯数字，"0.00" 或 "0.00g" 都会被转换为数字 0
+          const weight = parseFloat(row["重量"]);
+          
+          return (
+            weight === 0 && 
+            parseFloat(row["质检价格"]) !== 0 // 假设你需要保留原来可能被截断的价格判断条件
+          );
+        }
+      },
+     
     ];
 
     return filters.map(filter => ({
