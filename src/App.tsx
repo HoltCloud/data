@@ -683,19 +683,19 @@ function App() {
           );
         }
       },
-        {
-        name: "错误备注999",
-        filter: (row: CsvData) =>
-          !containsText(row["贵金属结论"], "足金") &&
-          parseFloat(row["质检价格"]) !== 0 &&
-          containsText(row["备注"], "999")
-      },
       {
         name: "足金筛选",
         filter: (row: CsvData) =>
           (containsText(row["商品名称"], "足金") || containsText(row["商品材质"], "足金") || containsText(row["配件材质"], "足金")) &&
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "足金")
+      },
+         {
+        name: "错误备注999",
+        filter: (row: CsvData) =>
+          !containsText(row["贵金属结论"], "足金") &&
+          parseFloat(row["质检价格"]) !== 0 &&
+          containsText(row["备注"], "999")
       },
         {
         name: "950筛选",
@@ -830,10 +830,10 @@ function App() {
           parseFloat(row["质检价格"]) !== 0
       },
       {
-        name: "称重备注不含链筛选",
+        name: "称重备注的不含链筛选",
         filter: (row: CsvData) =>
           !(containsText(row["重量"], "不含链") || containsText(row["重量"], "总重")) &&
-          (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链")) &&
+          (containsText(row["备注"], "配链未测") || containsText(row["备注"], "银925链") || containsText(row["备注"], "18K金链") || containsText(row["备注"], "足银链") || containsText(row["备注"], "链")) &&
           parseFloat(row["质检价格"]) !== 0
       },
 
