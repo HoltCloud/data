@@ -683,7 +683,7 @@ function App() {
           );
         }
       },
-      {
+        {
         name: "错误备注999",
         filter: (row: CsvData) =>
           !containsText(row["贵金属结论"], "足金") &&
@@ -693,9 +693,16 @@ function App() {
       {
         name: "足金筛选",
         filter: (row: CsvData) =>
-          (containsText(row["商品名称"], "足金") || containsText(row["商品材质"], "足金")) &&
+          (containsText(row["商品名称"], "足金") || containsText(row["商品材质"], "足金") || containsText(row["配件材质"], "足金")) &&
           parseFloat(row["质检价格"]) !== 0 &&
           !containsText(row["贵金属结论"], "足金")
+      },
+        {
+        name: "950筛选",
+        filter: (row: CsvData) =>
+          (containsText(row["商品名称"], "950") || containsText(row["商品材质"], "950")) &&
+          parseFloat(row["质检价格"]) !== 0 &&
+          !containsText(row["贵金属结论"], "950")
       },
       {
         name: "K金筛选",
