@@ -850,7 +850,7 @@ function App() {
        //   parseFloat(row["质检价格"]) !== 0
 
     //  }
-    {
+     {
         name: "漏打净金重筛选（优化中）",
         filter: (row: CsvData) => {
           // 1. 贵金属结论包含“足金”
@@ -860,7 +860,6 @@ function App() {
           const hasPrice = parseFloat(row["质检价格"]) !== 0;
 
           // 3. 重量不包含中文字符
-          // /[\u4e00-\u9fa5]/ 是匹配中文字符的正则表达式，前面加 ! 表示“不包含”
           const weight = row["重量"] || "";
           const noChineseInWeight = !/[\u4e00-\u9fa5]/.test(weight);
 
@@ -870,8 +869,14 @@ function App() {
             !containsText(row["备注"], "未测") &&
             !containsText(row["备注"], "功能性");
 
+          // 5. 新增：宝玉石结论为空
+          // 取出宝玉石结论，如果是 null 或 undefined 则默认为空字符串
+          const gemConclusion = row["宝玉石结论"] || "";
+          // 去除两端空格后，如果长度为 0，说明确实是空的
+          const isEmptyGem = gemConclusion.trim().length === 0;
+
           // 综合所有条件：必须同时满足 (&&)
-          return isZuJin && hasPrice && noChineseInWeight && noExcludedRemarks;
+          return isZuJin && hasPrice && noChineseInWeight && noExcludedRemarks && isEmptyGem;
         }
       },
       {
