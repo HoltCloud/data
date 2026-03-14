@@ -850,6 +850,30 @@ function App() {
        //   parseFloat(row["质检价格"]) !== 0
 
     //  }
+    {
+        name: "漏打净金重筛选（优化中）",
+        filter: (row: CsvData) => {
+          // 1. 贵金属结论包含“足金”
+          const isZuJin = containsText(row["贵金属结论"], "足金");
+
+          // 2. 质检价格不为 0
+          const hasPrice = parseFloat(row["质检价格"]) !== 0;
+
+          // 3. 重量不包含中文字符
+          // /[\u4e00-\u9fa5]/ 是匹配中文字符的正则表达式，前面加 ! 表示“不包含”
+          const weight = row["重量"] || "";
+          const noChineseInWeight = !/[\u4e00-\u9fa5]/.test(weight);
+
+          // 4. 备注不包含特定字符
+          const noExcludedRemarks = 
+            !containsText(row["备注"], "不包括") &&
+            !containsText(row["备注"], "未测") &&
+            !containsText(row["备注"], "功能性");
+
+          // 综合所有条件：必须同时满足 (&&)
+          return isZuJin && hasPrice && noChineseInWeight && noExcludedRemarks;
+        }
+      },
       {
         name: "零重量筛选",
         filter: (row: CsvData) => {
