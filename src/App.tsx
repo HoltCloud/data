@@ -657,11 +657,9 @@ function App() {
       {
         name: "999筛选",
         filter: (row: CsvData) =>
-          (containsText(row["商品名称"], "999") || containsText(row["商品材质"], "999")) &&
+          (containsText(row["商品名称"], "999") || containsText(row["商品材质"], "999") || containsText(row["镶嵌材质"], "999")) &&
           parseFloat(row["质检价格"]) !== 0 &&
-          !containsText(row["商品名称"], "铂") &&
-          !containsText(row["商品名称"], "翡翠") &&
-          !containsText(row["商品材质"], "铂") &&
+          containsText(row["贵金属结论"], "足金") &&
           !containsText(row["备注"], "999")
       },
       {
