@@ -889,28 +889,21 @@ function App() {
           );
         }
       },
-     {
+ {
         name: "足金低重量筛选核查",
         filter: (row: CsvData) => {
-          // 1. 贵金属结论包含“足金”
           const isZuJin = containsText(row["贵金属结论"], "足金");
-
-          // 2. 质检价格不为 0
           const hasPrice = parseFloat(row["质检价格"]) !== 0;
 
-          // 3. 重量判断：不包含中文字符 且 重量小于 0.2g
+          // 核心优化：无视标点和汉字，精准提取文本中的第一个数字（含小数）
           const weightStr = row["重量"] || "";
-          const noChineseInWeight = !/[\u4e00-\u9fa5]/.test(weightStr); // 不能有汉字
+          const match = weightStr.match(/\d+(\.\d+)?/); 
+          const weightNum = match ? parseFloat(match[0]) : NaN;
           
-          // 将重量提取为数字（如 "0.15g" 会变成 0.15）
-          const weightNum = parseFloat(weightStr);
-          // 确保提取出的是合法数字，且小于 0.2
-          const isWeightLessThan0_2 = !isNaN(weightNum) && weightNum < 0.2;
+          // 判断提取出的数字是否 大于0 且 小于0.2
+          const isLowWeight = !isNaN(weightNum) && weightNum > 0 && weightNum < 0.2;
 
-
-
-          // 综合所有条件：将 isWeightLessThan0_2 也加入判断 (&&)
-          return isZuJin && hasPrice && noChineseInWeight && isWeightLessThan0_2;
+          return isZuJin && hasPrice && isLowWeight;
         }
       },
     ];
