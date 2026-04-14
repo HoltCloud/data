@@ -159,6 +159,31 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     ),
   },
   {
+    name: "珍珠筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["珍珠"]),
+      priceNonZero,
+      no("宝玉石结论", "珍珠"),
+      no("备注", "珍珠"),
+    ),
+  },
+  {
+    name: "碧玉筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["碧玉"]),
+      priceNonZero,
+      no("宝玉石结论", "碧玉"),
+    ),
+  },
+  {
+    name: "合成碳硅石筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["合成碳硅石"]),
+      priceNonZero,
+      no("宝玉石结论", "合成碳硅石"),
+    ),
+  },
+  {
     name: "翡翠备注筛选",
     filter: all(
       has("宝玉石结论", "翡翠"),
