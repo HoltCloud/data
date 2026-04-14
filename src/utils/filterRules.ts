@@ -111,9 +111,10 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "925筛选",
     filter: all(
-      anyOf(["商品名称", "商品材质"], "925"),
+      anyOf(["商品名称", "商品材质","镶嵌材质", "配件材质"], "925"),
       priceNonZero,
       no("贵金属结论", "925"),
+      no("备注", "925"),
     ),
   },
   {
@@ -181,6 +182,15 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["合成碳硅石"]),
       priceNonZero,
       no("宝玉石结论", "合成碳硅石"),
+    ),
+  },
+    {
+    name: "合成立方氧化锆筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["合成立方氧化锆"]),
+      priceNonZero,
+      no("宝玉石结论", "合成立方氧化锆"),
+      no("备注", "合成立方氧化锆"),
     ),
   },
   {
