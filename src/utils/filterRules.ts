@@ -202,6 +202,15 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "翡翠A货"),
     ),
   },
+    {
+    name: "红色配珠未测筛选",
+    filter: all(
+      has("商品名称", "四叶草黄金手绳"),
+      priceNonZero,
+      no("宝玉石结论", "玛瑙"),
+      no("备注", "红色配珠未测"),
+    ),
+  },
 
   // ── 饰品类型 ────────────────────────────────────────────────────────────
   {
@@ -217,6 +226,15 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   },
 
   // ── 重量与备注 ───────────────────────────────────────────────────────────
+  {
+    name: "净金重备注多余字段筛选",
+    filter: (row: CsvData) => {
+      if (!containsText(row["重量"], "净金重")) return false;
+      // 备注去掉"金含量≥999‰"后，若仍有剩余内容则命中
+      const extra = (row["备注"] || "").replace("金含量≥999‰", "").trim();
+      return extra.length > 0;
+    },
+  },
   {
     name: "检测备注漏含覆层筛选",
     filter: all(
