@@ -146,7 +146,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "南红筛选",
     filter: all(
-      anyKeyword(["商品名称", "商品材质"], ["保山红", "凉山红", "川料红", "瓦西", "九口红", "锦红", "南红"]),
+      anyKeyword(["商品名称", "商品材质","镶嵌材质", "配件材质"], ["保山红", "凉山红", "川料红", "瓦西", "九口红", "锦红", "南红"]),
       priceNonZero,
       no("备注", "南红"),
     ),
@@ -154,7 +154,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "海水珍珠筛选",
     filter: all(
-      anyKeyword(["商品名称", "商品材质"], ["海水珍珠", "海水珠"]),
+      anyKeyword(["商品名称", "商品材质","镶嵌材质", "配件材质"], ["海水珍珠", "海水珠"]),
       priceNonZero,
       no("宝玉石结论", "海水珍珠"),
     ),
