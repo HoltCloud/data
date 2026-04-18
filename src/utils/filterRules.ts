@@ -228,6 +228,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       has("商品名称", "镶嵌"),
       priceNonZero,
       no("备注", "配石未测"),
+      no("商品名称", "翡翠"),
     ),
   },
 
