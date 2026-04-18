@@ -199,6 +199,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["玉髓"]),
       priceNonZero,
       no("宝玉石结论", "玉髓"),
+      no("宝玉石结论", "玛瑙"),
       no("备注", "玉髓"),
     ),
   },
