@@ -221,6 +221,15 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "红色配珠未测"),
     ),
   },
+   
+    {
+    name: "配石未测筛选",
+    filter: all(
+      has("商品名称", "镶嵌"),
+      priceNonZero,
+      no("备注", "配石未测"),
+    ),
+  },
 
   // ── 饰品类型 ────────────────────────────────────────────────────────────
   {
