@@ -193,6 +193,15 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "合成立方氧化锆"),
     ),
   },
+      {
+    name: "玉髓筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["玉髓"]),
+      priceNonZero,
+      no("宝玉石结论", "玉髓"),
+      no("备注", "玉髓"),
+    ),
+  },
   {
     name: "翡翠备注筛选",
     filter: all(
@@ -216,7 +225,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "饰品类型筛选",
     filter: (row: CsvData) => {
-      const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼"];
+      const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼","金元宝"];
       return (
         priceNonZero(row) &&
         !(row["饰品类型"] != null && row["饰品类型"].trim().length > 0) &&
@@ -229,7 +238,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "净金重备注多余字段筛选",
     filter: (row: CsvData) => {
-      if (!containsText(row["重量"], "净金重")) return false;
+      if (!containsText(row["重量"], "净金重") || !priceNonZero(row)) return false;
       // 把备注中所有已知允许字段全部去掉，剩余内容非空则命中
       const ALLOWED_PARTS = ["金含量≥999‰", "配银925链", "配链未测"];
       let remaining = row["备注"] || "";
