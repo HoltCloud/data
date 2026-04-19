@@ -142,6 +142,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     ),
   },
 
+
   // ── 宝玉石 ──────────────────────────────────────────────────────────────
   {
     name: "南红筛选",
@@ -302,6 +303,14 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("重量", "不含链"),
       no("重量", "总重"),
       hasAny("备注", ["配链未测", "银925链", "18K金链", "足银链", "链"]),
+      priceNonZero,
+    ),
+  },
+    {
+    name: "误打净金重",
+    filter: all(
+      has("重量", "净金重"),
+      hasAny("贵金属结论", ["K", "银", "铂"]),
       priceNonZero,
     ),
   },
