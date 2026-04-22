@@ -231,6 +231,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "配石未测"),
       no("商品名称", "翡翠"),
       no("商品材质", "钻石"),
+      no("宝玉石结论", "合成"),
     ),
   },
 
@@ -311,6 +312,13 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     filter: all(
       has("重量", "净金重"),
       hasAny("贵金属结论", ["K", "银", "铂"]),
+      priceNonZero,
+    ),
+  },
+   {
+    name: "漏驳回",
+    filter: all(
+      has("备注", "驳回"),
       priceNonZero,
     ),
   },
