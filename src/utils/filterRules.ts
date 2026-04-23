@@ -185,7 +185,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("宝玉石结论", "合成碳硅石"),
     ),
   },
-    {
+  {
     name: "合成立方氧化锆筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["合成立方氧化锆"]),
@@ -194,7 +194,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "合成立方氧化锆"),
     ),
   },
-      {
+  {
     name: "玉髓筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["玉髓"]),
@@ -202,6 +202,42 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("宝玉石结论", "玉髓"),
       no("宝玉石结论", "玛瑙"),
       no("备注", "玉髓"),
+    ),
+  },
+  {
+    name: "和田玉筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["和田玉"]),
+      priceNonZero,
+      no("宝玉石结论", "和田玉"),
+      no("备注", "和田玉"),
+    ),
+  },
+   {
+    name: "绿松石筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["绿松"]),
+      priceNonZero,
+      no("宝玉石结论", "绿松"),
+      no("备注", "绿松"),
+    ),
+  },
+    {
+    name: "黑曜岩筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["黑曜"]),
+      priceNonZero,
+      no("宝玉石结论", "黑曜"),
+      no("备注", "黑曜"),
+    ),
+  },
+      {
+    name: "贝壳筛选",
+    filter: all(
+      anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["贝壳"]),
+      priceNonZero,
+      no("宝玉石结论", "贝壳"),
+      no("备注", "贝壳"),
     ),
   },
   {
