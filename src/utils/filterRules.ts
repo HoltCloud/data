@@ -239,7 +239,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "饰品类型筛选",
     filter: (row: CsvData) => {
-      const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼","金元宝"];
+      const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼","金元宝","爱心"];
       return (
         priceNonZero(row) &&
         !(row["饰品类型"] != null && row["饰品类型"].trim().length > 0) &&
