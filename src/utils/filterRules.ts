@@ -268,6 +268,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("商品名称", "翡翠"),
       no("商品材质", "钻石"),
       no("宝玉石结论", "合成"),
+      no("宝玉石结论", "石榴石"),
     ),
   },
 
