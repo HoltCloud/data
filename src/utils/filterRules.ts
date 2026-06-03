@@ -249,26 +249,15 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "翡翠A货"),
     ),
   },
-    {
-    name: "红色配珠未测筛选",
-    filter: all(
-      has("商品名称", "四叶草黄金手绳"),
-      priceNonZero,
-      no("宝玉石结论", "玛瑙"),
-      no("备注", "红色配珠未测"),
-    ),
-  },
+
    
     {
     name: "配石未测筛选",
     filter: all(
       has("商品名称", "镶嵌"),
       priceNonZero,
-      no("备注", "配石未测"),
-      no("商品名称", "翡翠"),
-      no("商品材质", "钻石"),
-      no("宝玉石结论", "合成"),
-      no("宝玉石结论", "石榴石"),
+      no("备注", "配石"),
+      (row) => (row["宝玉石结论"] || "").trim().length === 0,
     ),
   },
 
