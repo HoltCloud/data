@@ -76,6 +76,14 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       has("贵金属结论", "足金"),
     ),
   },
+    {
+    name: "14K金筛选",
+    filter: all(
+      anyOf(["商品名称", "商品材质", "镶嵌材质", "配件材质"], "14K"),
+      priceNonZero,
+      no("贵金属结论", "14K"),
+    ),
+  },
   {
     name: "足金筛选",
     filter: all(
