@@ -91,7 +91,7 @@ export function FulfillmentStatusPage({
         </button>
       </div>
       {error && <div className="text-red-400 mb-2">{error}</div>}
-      {buckets.length > 0 && (
+      {(buckets.length > 0 || pendingInBuckets.length > 0) && (
         <div className="mb-6">
           <h3 className="text-lg font-medium text-white/80 mb-2">各商家"待绑码"/"待入库"订单数量</h3>
           <div className="w-full flex flex-col md:flex-row gap-6">
@@ -140,6 +140,15 @@ export function FulfillmentStatusPage({
                 {(() => {
                   const total = pieData.reduce((sum, d) => sum + d.value, 0);
                   if (total === 0) return <circle cx="120" cy="120" r="100" fill="#E5E7EB" />;
+                  const nonEmptyData = pieData.filter(d => d.value > 0);
+                  if (nonEmptyData.length === 1) {
+                    return (
+                      <React.Fragment>
+                        <circle cx="120" cy="120" r="100" fill={nonEmptyData[0].color} />
+                        <text x="120" y="120" textAnchor="middle" dominantBaseline="middle" fill="#222" fontSize="20" fontWeight="bold">100%</text>
+                      </React.Fragment>
+                    );
+                  }
                   let startAngle = 0;
                   const elements = [];
                   for (let i = 0; i < pieData.length; i++) {

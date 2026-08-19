@@ -1,7 +1,6 @@
 import React from 'react';
 import { Database } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { CsvData } from '../../types';
 import { TIME_BUCKETS, parseTimeToHour } from '../../utils/csvParser';
 
 export function DataAnalysisPage({
@@ -22,9 +21,9 @@ export function DataAnalysisPage({
     reader.onload = (evt) => {
       try {
         const data = new Uint8Array(evt.target!.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
+        const workbook = XLSX.read(data, { type: 'array', cellDates: true });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json: CsvData[] = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        const json = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
 
         // 统计入库时间分布
         const bucketCounts = [0, 0, 0, 0, 0, 0];

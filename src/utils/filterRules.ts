@@ -34,7 +34,10 @@ const anyKeyword = (fields: string[], keywords: string[]) =>
   (row: CsvData) => keywords.some(k => fields.some(f => containsText(row[f], k)));
 
 /** 质检价格不为 0（绝大多数规则都需要这个条件） */
-const priceNonZero = (row: CsvData) => parseFloat(row["质检价格"]) !== 0;
+const priceNonZero = (row: CsvData) => {
+  const price = Number.parseFloat(row["质检价格"]);
+  return Number.isFinite(price) && price !== 0;
+};
 
 /** 将多个条件组合：全部满足才算命中（AND 逻辑） */
 function all(...conditions: ((row: CsvData) => boolean)[]) {
@@ -273,7 +276,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "饰品类型筛选",
     filter: (row: CsvData) => {
-      const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼","金元宝","爱心"];
+      const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼", "金元宝", "爱心", "银婆婆", "贵玲珑"];
       return (
         priceNonZero(row) &&
         !(row["饰品类型"] != null && row["饰品类型"].trim().length > 0) &&
