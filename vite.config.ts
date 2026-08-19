@@ -8,4 +8,15 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   base: '/data/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          spreadsheet: ['xlsx'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
+  },
 });

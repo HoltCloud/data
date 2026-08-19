@@ -1,11 +1,11 @@
 // Cloudflare Worker for serving static site
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     
     // Handle API routes if needed
     if (url.pathname.startsWith('/api/')) {
-      return handleAPI(request, env);
+      return handleAPI(request, url);
     }
     
     // Serve static files from the site bucket
@@ -13,9 +13,9 @@ export default {
   }
 };
 
-async function handleAPI(request, env) {
+async function handleAPI(request, url) {
   // Example API endpoint
-  if (request.method === 'GET' && request.url.pathname === '/api/health') {
+  if (request.method === 'GET' && url.pathname === '/api/health') {
     return new Response(JSON.stringify({ status: 'ok' }), {
       headers: { 'Content-Type': 'application/json' }
     });

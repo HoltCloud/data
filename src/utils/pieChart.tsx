@@ -4,6 +4,18 @@ export function renderPieChart(sectors: { value: number; color: string }[]) {
   const total = sectors.reduce((sum, sector) => sum + sector.value, 0);
   if (total === 0) return <circle cx="50" cy="50" r="45" fill="#374151" />;
 
+  const nonEmptySectors = sectors.filter(sector => sector.value > 0);
+  if (nonEmptySectors.length === 1) {
+    return (
+      <React.Fragment>
+        <circle cx="50" cy="50" r="45" fill={nonEmptySectors[0].color} />
+        <text x="50" y="50" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="8" fontWeight="bold">
+          100%
+        </text>
+      </React.Fragment>
+    );
+  }
+
   let startAngle = 0;
   const elements = [];
 

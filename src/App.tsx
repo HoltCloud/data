@@ -164,7 +164,7 @@ function App() {
         try {
           const date = new Date(dueTime);
           if (!isNaN(date.getTime())) {
-            dueTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            dueTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
           }
         } catch {
           // 忽略错误

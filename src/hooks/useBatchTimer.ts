@@ -8,24 +8,48 @@ export interface RemainingTimeInfo {
   remainingMs: number;
 }
 
+function parseDueTime(dueTimeStr: string, currentTime: Date): Date | null {
+  const value = dueTimeStr.trim();
+  if (!value) return null;
+
+  const timeOnly = value.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (timeOnly) {
+    const hours = Number(timeOnly[1]);
+    const minutes = Number(timeOnly[2]);
+    const seconds = Number(timeOnly[3] || 0);
+    if (hours > 23 || minutes > 59 || seconds > 59) return null;
+
+    const result = new Date(currentTime);
+    result.setHours(hours, minutes, seconds, 0);
+    return result;
+  }
+
+  // Explicitly parse common local-date formats instead of relying on
+  // implementation-dependent parsing of strings such as "2026-08-19 09:30".
+  const dateTime = value.match(
+    /^(\d{4})[/-](\d{1,2})[/-](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/
+  );
+  if (dateTime) {
+    const [, year, month, day, hour = '0', minute = '0', second = '0'] = dateTime;
+    const result = new Date(
+      Number(year), Number(month) - 1, Number(day),
+      Number(hour), Number(minute), Number(second), 0
+    );
+    const isValid = result.getFullYear() === Number(year)
+      && result.getMonth() === Number(month) - 1
+      && result.getDate() === Number(day)
+      && result.getHours() === Number(hour)
+      && result.getMinutes() === Number(minute);
+    return isValid ? result : null;
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 export function calculateRemainingTime(dueTimeStr: string, currentTime: Date): RemainingTimeInfo {
-  let dueTime: Date | null = null;
-
   try {
-    if (dueTimeStr.includes('/') || dueTimeStr.includes('-')) {
-      // 处理日期格式 (如 "2023/05/20 14:30" 或 "2023-05-20 14:30")
-      dueTime = new Date(dueTimeStr);
-    } else if (dueTimeStr.match(/^\d{1,2}:\d{2}$/)) {
-      // 处理时间格式 (如 "14:30")
-      const [hours, minutes] = dueTimeStr.split(':').map(Number);
-      dueTime = new Date();
-      dueTime.setHours(hours, minutes, 0, 0);
-
-      // 如果设置的时间已经过去，则设置为明天的同一时间
-      if (dueTime < currentTime) {
-        dueTime.setDate(dueTime.getDate() + 1);
-      }
-    }
+    const dueTime = parseDueTime(dueTimeStr, currentTime);
 
     if (!dueTime || isNaN(dueTime.getTime())) {
       console.warn(`无法解析逾期时间: ${dueTimeStr}`);
