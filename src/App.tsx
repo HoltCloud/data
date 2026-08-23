@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { CsvData, BatchData } from './types';
 import { calculateRemainingTime, useBatchTimer } from './hooks/useBatchTimer';
@@ -9,19 +9,11 @@ import { FulfillmentStatusPage } from './components/FulfillmentStatus/Fulfillmen
 
 function App() {
   // 导航状态
-  const [activePage, setActivePage] = useState<'dataFilter' | 'batchTimer' | 'dataAnalysis' | 'fulfillmentStatus'>(
-    () => (localStorage.getItem('activePage') as 'dataFilter' | 'batchTimer' | 'dataAnalysis' | 'fulfillmentStatus') || 'dataFilter'
-  );
+  const [activePage, setActivePage] = useState<'dataFilter' | 'batchTimer' | 'dataAnalysis' | 'fulfillmentStatus'>('dataFilter');
 
   // 批次计时器状态
-  const [batchData, setBatchData] = useState<BatchData[]>(() => {
-    const saved = localStorage.getItem('batchData');
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [allBatchData, setAllBatchData] = useState<BatchData[]>(() => {
-    const saved = localStorage.getItem('allBatchData');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [batchData, setBatchData] = useState<BatchData[]>([]);
+  const [allBatchData, setAllBatchData] = useState<BatchData[]>([]);
   const [batchFileError, setBatchFileError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -35,19 +27,6 @@ function App() {
 
   // 批次计时器 Hook（每秒更新剩余时间）
   useBatchTimer(batchData, setBatchData, setCurrentTime);
-
-  // 持久化到 localStorage
-  useEffect(() => {
-    localStorage.setItem('activePage', activePage);
-  }, [activePage]);
-
-  useEffect(() => {
-    localStorage.setItem('batchData', JSON.stringify(batchData));
-  }, [batchData]);
-
-  useEffect(() => {
-    localStorage.setItem('allBatchData', JSON.stringify(allBatchData));
-  }, [allBatchData]);
 
   // 处理批次 Excel 文件
   const processBatchFile = (file: File) => {
@@ -116,8 +95,6 @@ function App() {
 
         setBatchData(filteredBatchData);
         setAllBatchData(allProcessedBatchData);
-        localStorage.setItem('batchData', JSON.stringify(filteredBatchData));
-        localStorage.setItem('allBatchData', JSON.stringify(allProcessedBatchData));
       } catch (err) {
         console.error('Error processing batch file:', err);
         setBatchFileError(`批次文件解析错误: ${err instanceof Error ? err.message : '未知错误'}`);
@@ -203,8 +180,6 @@ function App() {
     if (window.confirm('确定要清除所有批次数据吗？此操作不可撤销。')) {
       setBatchData([]);
       setAllBatchData([]);
-      localStorage.removeItem('batchData');
-      localStorage.removeItem('allBatchData');
     }
   };
 
