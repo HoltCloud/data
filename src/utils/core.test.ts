@@ -37,18 +37,20 @@ describe('data normalization', () => {
     expect(parseTimeToHour(45523.75)).toBe(18);
   });
 
-  it('screens only passed or blank quality-check results regardless of price', () => {
+  it('excludes zero prices and screens only passed or blank quality-check results', () => {
     const rows = parseCSV(
       '证书编码,商品名称,贵金属结论,重量,备注,质检价格,质检结果\n' +
       'A,999项链,足金,0g,,0, 通过 \n' +
       'B,999项链,足金,0g,,0.00,\n' +
       'C,999项链,足金,0g,,10, 不通过 \n' +
       'D,999项链,足金,0g,,,   \n' +
-      'E,999项链,足金,0g,,10,待质检'
+      'E,999项链,足金,0g,,10,待质检\n' +
+      'F,999项链,足金,0g,,0.01,通过\n' +
+      'G,999项链,足金,0g,,10,'
     );
 
     const results = filterData(rows);
-    const eligibleRows = [rows[0], rows[1], rows[3]];
+    const eligibleRows = [rows[3], rows[5], rows[6]];
 
     expect(results.find(result => result.name === '999筛选')?.data).toEqual(eligibleRows);
     expect(results.find(result => result.name === '零重量筛选')?.data).toEqual(eligibleRows);

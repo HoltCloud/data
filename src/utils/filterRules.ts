@@ -348,10 +348,13 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
 ];
 
 export function filterData(data: CsvData[]): FilterResult[] {
-  // 只让质检结果为通过或空白的记录进入筛选。
+  // 先剔除质检结果不符合条件或价格明确为零的记录。
   const eligibleRows = data.filter(row => {
     const result = row["质检结果"]?.trim() ?? "";
-    return result === "通过" || result === "";
+    if (result !== "通过" && result !== "") return false;
+
+    const price = row["质检价格"]?.trim();
+    return !price || Number(price) !== 0;
   });
 
   return FILTER_RULES.map(rule => ({
