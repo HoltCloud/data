@@ -37,31 +37,22 @@ describe('data normalization', () => {
     expect(parseTimeToHour(45523.75)).toBe(18);
   });
 
-  it('does not treat a missing or invalid quality-check price as non-zero', () => {
-    const invalidRows = filterData([{
-      '商品名称': '999项链', '贵金属结论': '足金', '备注': '', '质检价格': ''
-    }]);
-    const validRows = filterData([{
-      '商品名称': '999项链', '贵金属结论': '足金', '备注': '', '质检价格': '10'
-    }]);
-
-    expect(invalidRows.find(result => result.name === '999筛选')?.data).toHaveLength(0);
-    expect(validRows.find(result => result.name === '999筛选')?.data).toHaveLength(1);
-  });
-
-  it('excludes zero-priced CSV rows from every screening result', () => {
+  it('screens only passed or blank quality-check results regardless of price', () => {
     const rows = parseCSV(
-      '证书编码,商品名称,贵金属结论,重量,备注,质检价格\n' +
-      'A,999项链,足金,0g,,0\n' +
-      'B,999项链,足金,0g,,0.00\n' +
-      'C,999项链,足金,0g,,0.01'
+      '证书编码,商品名称,贵金属结论,重量,备注,质检价格,质检结果\n' +
+      'A,999项链,足金,0g,,0, 通过 \n' +
+      'B,999项链,足金,0g,,0.00,\n' +
+      'C,999项链,足金,0g,,10, 不通过 \n' +
+      'D,999项链,足金,0g,,,   \n' +
+      'E,999项链,足金,0g,,10,待质检'
     );
 
     const results = filterData(rows);
+    const eligibleRows = [rows[0], rows[1], rows[3]];
 
-    expect(results.find(result => result.name === '999筛选')?.data).toEqual([rows[2]]);
-    expect(results.find(result => result.name === '零重量筛选')?.data).toEqual([rows[2]]);
-    expect([...new Set(results.flatMap(result => result.data))]).toEqual([rows[2]]);
+    expect(results.find(result => result.name === '999筛选')?.data).toEqual(eligibleRows);
+    expect(results.find(result => result.name === '零重量筛选')?.data).toEqual(eligibleRows);
+    expect([...new Set(results.flatMap(result => result.data))]).toEqual(eligibleRows);
   });
 
   it('excludes 银婆婆 and 贵玲珑 from the missing jewelry type filter', () => {

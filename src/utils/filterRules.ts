@@ -348,10 +348,10 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
 ];
 
 export function filterData(data: CsvData[]): FilterResult[] {
-  // 在运行任何规则前统一剔除零价格和无效价格。
+  // 只让质检结果为通过或空白的记录进入筛选。
   const eligibleRows = data.filter(row => {
-    const price = Number.parseFloat(row["质检价格"]);
-    return Number.isFinite(price) && price !== 0;
+    const result = row["质检结果"]?.trim() ?? "";
+    return result === "通过" || result === "";
   });
 
   return FILTER_RULES.map(rule => ({
