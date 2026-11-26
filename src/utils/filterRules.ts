@@ -33,12 +33,6 @@ const hasAny = (field: string, keywords: string[]) =>
 const anyKeyword = (fields: string[], keywords: string[]) =>
   (row: CsvData) => keywords.some(k => fields.some(f => containsText(row[f], k)));
 
-/** 质检价格不为 0（绝大多数规则都需要这个条件） */
-const priceNonZero = (row: CsvData) => {
-  const price = Number.parseFloat(row["质检价格"]);
-  return Number.isFinite(price) && price !== 0;
-};
-
 /** 将多个条件组合：全部满足才算命中（AND 逻辑） */
 function all(...conditions: ((row: CsvData) => boolean)[]) {
   return (row: CsvData) => conditions.every(c => c(row));
@@ -57,7 +51,6 @@ function all(...conditions: ((row: CsvData) => boolean)[]) {
 //   noneOf(["字段A","字段B"], "文字")         → 所有字段均不包含文字
 //   hasAny("字段", ["关键词1","关键词2"])      → 字段包含任意一个关键词
 //   anyKeyword(["字段A","字段B"], ["词1","词2"]) → 任意字段包含任意关键词
-//   priceNonZero                             → 质检价格不为 0
 // ────────────────────────────────────────────────────────────────────────────
 const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
 
@@ -66,7 +59,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "999筛选",
     filter: all(
       anyOf(["商品名称", "商品材质", "镶嵌材质"], "999"),
-      priceNonZero,
       has("贵金属结论", "足金"),
       no("备注", "999"),
     ),
@@ -75,7 +67,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "上错足金材质",
     filter: all(
       noneOf(["商品名称", "商品材质", "镶嵌材质", "配件材质"], "足金"),
-      priceNonZero,
       has("贵金属结论", "足金"),
     ),
   },
@@ -83,7 +74,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "14K金筛选",
     filter: all(
       anyOf(["商品名称", "商品材质", "镶嵌材质", "配件材质"], "14K"),
-      priceNonZero,
       no("贵金属结论", "14K"),
     ),
   },
@@ -91,7 +81,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "足金筛选",
     filter: all(
       anyOf(["商品名称", "商品材质", "配件材质"], "足金"),
-      priceNonZero,
       no("贵金属结论", "足金"),
     ),
   },
@@ -99,7 +88,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "错误备注999",
     filter: all(
       no("贵金属结论", "足金"),
-      priceNonZero,
       has("备注", "999"),
     ),
   },
@@ -107,7 +95,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "950筛选",
     filter: all(
       anyOf(["商品名称", "商品材质"], "950"),
-      priceNonZero,
       no("贵金属结论", "950"),
     ),
   },
@@ -115,7 +102,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "K金筛选",
     filter: all(
       anyOf(["商品名称", "商品材质", "镶嵌材质"], "K金"),
-      priceNonZero,
       no("贵金属结论", "K金"),
     ),
   },
@@ -123,7 +109,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "925筛选",
     filter: all(
       anyOf(["商品名称", "商品材质","镶嵌材质", "配件材质"], "925"),
-      priceNonZero,
       no("贵金属结论", "925"),
       no("备注", "925"),
     ),
@@ -132,7 +117,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "足银筛选",
     filter: all(
       anyOf(["商品名称", "商品材质"], "足银"),
-      priceNonZero,
       no("贵金属结论", "足银"),
     ),
   },
@@ -140,7 +124,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "足铂筛选",
     filter: all(
       anyOf(["商品名称", "商品材质"], "足铂"),
-      priceNonZero,
       no("贵金属结论", "足铂"),
     ),
   },
@@ -148,7 +131,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "铂筛选",
     filter: all(
       anyOf(["商品名称", "商品材质"], "铂"),
-      priceNonZero,
       no("贵金属结论", "铂"),
     ),
   },
@@ -159,7 +141,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "南红筛选",
     filter: all(
       anyKeyword(["商品名称", "商品材质","镶嵌材质", "配件材质"], ["保山红", "凉山红", "川料红", "瓦西", "九口红", "锦红", "南红"]),
-      priceNonZero,
       no("备注", "南红"),
     ),
   },
@@ -167,7 +148,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "海水珍珠筛选",
     filter: all(
       anyKeyword(["商品名称", "商品材质","镶嵌材质", "配件材质"], ["海水珍珠", "海水珠"]),
-      priceNonZero,
       no("宝玉石结论", "海水珍珠"),
     ),
   },
@@ -175,7 +155,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "珍珠筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["珍珠"]),
-      priceNonZero,
       no("宝玉石结论", "珍珠"),
       no("备注", "珍珠"),
     ),
@@ -184,7 +163,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "碧玉筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["碧玉"]),
-      priceNonZero,
       no("宝玉石结论", "碧玉"),
     ),
   },
@@ -192,7 +170,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "合成碳硅石筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["合成碳硅石"]),
-      priceNonZero,
       no("宝玉石结论", "合成碳硅石"),
     ),
   },
@@ -200,7 +177,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "合成立方氧化锆筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["合成立方氧化锆"]),
-      priceNonZero,
       no("宝玉石结论", "合成立方氧化锆"),
       no("备注", "合成立方氧化锆"),
     ),
@@ -209,7 +185,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "玉髓筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["玉髓"]),
-      priceNonZero,
       no("宝玉石结论", "玉髓"),
       no("宝玉石结论", "玛瑙"),
       no("备注", "玉髓"),
@@ -219,7 +194,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "和田玉筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["和田玉"]),
-      priceNonZero,
       no("宝玉石结论", "和田玉"),
       no("备注", "和田玉"),
     ),
@@ -228,7 +202,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "绿松石筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["绿松"]),
-      priceNonZero,
       no("宝玉石结论", "绿松"),
       no("备注", "绿松"),
     ),
@@ -237,7 +210,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "黑曜岩筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["黑曜"]),
-      priceNonZero,
       no("宝玉石结论", "黑曜"),
       no("备注", "黑曜"),
     ),
@@ -246,7 +218,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "贝壳筛选",
     filter: all(
       anyKeyword(["商品材质","镶嵌材质", "配件材质"], ["贝壳"]),
-      priceNonZero,
       no("宝玉石结论", "贝壳"),
       no("备注", "贝壳"),
     ),
@@ -255,7 +226,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "翡翠备注筛选",
     filter: all(
       has("宝玉石结论", "翡翠"),
-      priceNonZero,
       no("备注", "A货翡翠"),
       no("备注", "翡翠A货"),
     ),
@@ -266,7 +236,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     name: "配石未测筛选",
     filter: all(
       has("商品名称", "镶嵌"),
-      priceNonZero,
       no("备注", "配石"),
       (row) => (row["宝玉石结论"] || "").trim().length === 0,
     ),
@@ -278,7 +247,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     filter: (row: CsvData) => {
       const EXCLUDED_NAMES = ["金条", "金豆", "投资", "金钞", "金饼", "金元宝", "爱心", "银婆婆", "贵玲珑"];
       return (
-        priceNonZero(row) &&
         !(row["饰品类型"] != null && row["饰品类型"].trim().length > 0) &&
         EXCLUDED_NAMES.every(n => !containsText(row["商品名称"], n))
       );
@@ -289,7 +257,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "净金重备注多余字段筛选",
     filter: (row: CsvData) => {
-      if (!containsText(row["重量"], "净金重") || !priceNonZero(row)) return false;
+      if (!containsText(row["重量"], "净金重")) return false;
       // 把备注中所有已知允许字段全部去掉，剩余内容非空则命中
       const ALLOWED_PARTS = ["金含量≥999‰", "配银925链", "配链未测"];
       let remaining = row["备注"] || "";
@@ -306,14 +274,12 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     filter: all(
       has("重量", "覆层"),
       no("备注", "贵金属纯度不包括表层"),
-      priceNonZero,
     ),
   },
   {
     name: "重量单位筛选",
     filter: all(
       no("重量", "g"),
-      priceNonZero,
     ),
   },
   {
@@ -322,7 +288,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("重量", "含覆层"),
       no("重量", "总重"),
       has("备注", "贵金属纯度不包括表层"),
-      priceNonZero,
     ),
   },
   {
@@ -332,7 +297,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("备注", "配链"),
       no("备注", "银925链"),
       no("备注", "配18K金链"),
-      priceNonZero,
     ),
   },
   {
@@ -341,7 +305,6 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       no("重量", "不含链"),
       no("重量", "总重"),
       hasAny("备注", ["配链未测", "银925链", "18K金链", "足银链", "链"]),
-      priceNonZero,
     ),
   },
     {
@@ -349,14 +312,12 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     filter: all(
       has("重量", "净金重"),
       hasAny("贵金属结论", ["K", "银", "铂"]),
-      priceNonZero,
     ),
   },
    {
     name: "漏驳回",
     filter: all(
       has("备注", "驳回"),
-      priceNonZero,
     ),
   },
 
@@ -364,7 +325,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
   {
     name: "零重量筛选",
     filter: (row: CsvData) =>
-      parseFloat(row["重量"]) === 0 && priceNonZero(row),
+      parseFloat(row["重量"]) === 0,
   },
   {
     name: "漏打净金重筛选（优化中）",
@@ -373,7 +334,7 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
       const noChineseInWeight = !/[\u4e00-\u9fa5]/.test(weight);
       const noExcludedRemarks = !hasAny("备注", ["不包括", "未测", "功能性"])(row);
       const isEmptyGem = (row["宝玉石结论"] || "").trim().length === 0;
-      return has("贵金属结论", "足金")(row) && priceNonZero(row) && noChineseInWeight && noExcludedRemarks && isEmptyGem;
+      return has("贵金属结论", "足金")(row) && noChineseInWeight && noExcludedRemarks && isEmptyGem;
     },
   },
   {
@@ -381,14 +342,20 @@ const FILTER_RULES: { name: string; filter: (row: CsvData) => boolean }[] = [
     filter: (row: CsvData) => {
       const match = (row["重量"] || "").match(/\d+(\.\d+)?/);
       const weightNum = match ? parseFloat(match[0]) : NaN;
-      return has("贵金属结论", "足金")(row) && priceNonZero(row) && !isNaN(weightNum) && weightNum > 0 && weightNum < 0.2;
+      return has("贵金属结论", "足金")(row) && !isNaN(weightNum) && weightNum > 0 && weightNum < 0.2;
     },
   },
 ];
 
 export function filterData(data: CsvData[]): FilterResult[] {
+  // 在运行任何规则前统一剔除零价格和无效价格。
+  const eligibleRows = data.filter(row => {
+    const price = Number.parseFloat(row["质检价格"]);
+    return Number.isFinite(price) && price !== 0;
+  });
+
   return FILTER_RULES.map(rule => ({
     name: rule.name,
-    data: data.filter(rule.filter),
+    data: eligibleRows.filter(rule.filter),
   }));
 }

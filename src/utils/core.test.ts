@@ -49,6 +49,21 @@ describe('data normalization', () => {
     expect(validRows.find(result => result.name === '999筛选')?.data).toHaveLength(1);
   });
 
+  it('excludes zero-priced CSV rows from every screening result', () => {
+    const rows = parseCSV(
+      '证书编码,商品名称,贵金属结论,重量,备注,质检价格\n' +
+      'A,999项链,足金,0g,,0\n' +
+      'B,999项链,足金,0g,,0.00\n' +
+      'C,999项链,足金,0g,,0.01'
+    );
+
+    const results = filterData(rows);
+
+    expect(results.find(result => result.name === '999筛选')?.data).toEqual([rows[2]]);
+    expect(results.find(result => result.name === '零重量筛选')?.data).toEqual([rows[2]]);
+    expect([...new Set(results.flatMap(result => result.data))]).toEqual([rows[2]]);
+  });
+
   it('excludes 银婆婆 and 贵玲珑 from the missing jewelry type filter', () => {
     const results = filterData([
       { '商品名称': '银婆婆手链', '饰品类型': '', '质检价格': '10' },
